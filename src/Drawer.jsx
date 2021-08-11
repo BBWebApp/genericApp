@@ -44,8 +44,8 @@ const Drawer = (props) => {
   const { history } = props;
   const [favsNames, setFavsNames] = useState(undefined);
   var drawer = {
-    One: ["hey", "you", { newCategory: ["123"] }],
-    three: ["and"],
+    Defaults: ["crossApp", "mobileView", { DZBank: ["financialIssues"] }],
+    Tableau: ["databases"],
   };
 
   const [open, setOpen] = useState(true);
