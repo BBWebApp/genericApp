@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Typography, makeStyles } from "@material-ui/core";
-import ReportComponentTable from "./ReportComponentTable";
-import ReportComponentText from "./ReportComponentText";
-import ReportComponentChart from "./ReportComponentChart";
+import ReportGenericComponentTable from "./ReportGenericComponentTable";
+import ReportGenericComponentText from "./ReportGenericComponentText";
+import ReportGenericComponentChart from "./ReportGenericComponentChart";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
@@ -31,20 +31,20 @@ const ReportTemplateContent = (props) => {
       <div className={classes.report_content}>
         {components.map((item, index) => {
           return item.$.type === "table" ? (
-            <ReportComponentTable
+            <ReportGenericComponentTable
               key={reportId}
               xmlResult={item}
               order={index}
             />
           ) : item.$.type === "text" ? (
-            <ReportComponentText
+            <ReportGenericComponentText
               key={reportId}
               reportId={reportId}
               xmlResult={item}
               order={index}
             />
           ) : item.$.type === "chart" ? (
-            <ReportComponentChart
+            <ReportGenericComponentChart
               key={reportId}
               reportId={reportId}
               xmlResult={item}

@@ -160,6 +160,7 @@ const AppStructureController = ({ appXml }) => {
           path="/appxml"
           render={(props) => <GenericXmlDocument xml={appXml} />}
         />
+        
         <Route exact path="/dashboard" render={(props) => <Dashboard />} />
         <Route
           exact

@@ -2,7 +2,7 @@
 // import Report from "../tempComponents/Report";
 import React, { useEffect, useState } from "react";
 // import ReportTemplatePage from '@bit/bbconsult.standalone-components.report-template-page'
-import ReportComponentPage from "./ReportComponentPage";
+import ReportGenericComponentPage from "./ReportGenericComponentPage";
 import { useSelector, useDispatch } from "react-redux";
 import { getReportHtml } from "../redux/ducks/serverCall";
 
@@ -38,7 +38,7 @@ const BodyFromDrawerController = (props) => {
     reportId_html_flag === reportId
   ) {
     reportContent = (
-      <ReportComponentPage
+      <ReportGenericComponentPage
         reportId={reportId}
         packageId={packageId}
         xmlResult={xmlResult}

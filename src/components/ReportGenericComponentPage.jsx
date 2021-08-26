@@ -5,15 +5,15 @@ import { useScreenshot } from "use-react-screenshot";
 import { getSlicedImage } from "../redux/ducks/cropImage";
 import { getDownloadedImages } from "../redux/ducks/downloadImage";
 import { uploadImage } from "../redux/ducks/uploadImage";
-import ReportComponentContent from "./ReportComponentContent";
-import ReportComponentFooter from "./ReportComponentFooter";
-import ReportComponentHeader from "./ReportComponentHeader";
+import ReportGenericComponentContent from "./ReportGenericComponentContent";
+import ReportGenericComponentFooter from "./ReportGenericComponentFooter";
+import ReportGenericComponentHeader from "./ReportGenericComponentHeader";
 import StarBorder from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
 
 const useStyles = makeStyles({});
 
-const ReportComponentPage = (props) => {
+const ReportGenericComponentPage = (props) => {
   const { xmlResult } = props;
   const { reportId } = props;
   const { packageId } = props;
@@ -95,13 +95,16 @@ const ReportComponentPage = (props) => {
           )}
         </IconButton>
         <div ref={ref}>
-          <ReportComponentHeader key={reportId} />
-          <ReportComponentContent reportId={reportId} xmlResult={xmlResult} />
-          <ReportComponentFooter key={reportId} />
+          <ReportGenericComponentHeader key={reportId} />
+          <ReportGenericComponentContent
+            reportId={reportId}
+            xmlResult={xmlResult}
+          />
+          <ReportGenericComponentFooter key={reportId} />
         </div>
       </Grid>
     </div>
   );
 };
 
-export default ReportComponentPage;
+export default ReportGenericComponentPage;

@@ -1,61 +1,29 @@
 import axios from "axios";
+import * as myConstClass from "../../../global";
 
-var base = require("base-64");
-
-var url1 = "http://localhost:8011/proxy/workflow/4/task/1/upload";
-var url2 = "http://localhost:8011/proxy/workflow/5/task/1/upload";
-var tok = "gui_client:kFjfAh68k$$ADUjPr?vPA";
-var hash = base.encode(tok);
-var Basic = "Basic " + hash;
-var xmlImagesDownloaded = undefined;
-
+var dispatch_types_urls = {
+  UPLOAD_IMAGE: `http://${myConstClass.LOCAL_IP_ADDRESS}:${myConstClass.EXPRESS_PORT}/uploadImage`,
+  REMOVE_IMAGE: `http://${myConstClass.LOCAL_IP_ADDRESS}:${myConstClass.EXPRESS_PORT}/removeImage`,
+};
 export function requestUpload(actions) {
   switch (actions.type) {
     case "UPLOAD_IMAGE":
       var reportId = actions["reportId"];
       var item = actions["image"];
       var favouriteClicked = actions["favourite"];
-      axios
-        .get(favouriteClicked ? url1 : url2, {
-          headers: {
-            Authorization: Basic,
-          },
-        })
-        .then((response) => {
-          xmlImagesDownloaded = JSON.parse(response.data);
-          if (xmlImagesDownloaded.length > 5) {
-            xmlImagesDownloaded = xmlImagesDownloaded.slice(0, 5);
-          }
-          xmlImagesDownloaded = xmlImagesDownloaded.filter(
-            (item) => Object.keys(item)[0] !== reportId
-          );
-          var newElement = {};
-          newElement[reportId] = item;
-          xmlImagesDownloaded = [newElement].concat(xmlImagesDownloaded);
-          axios.post(favouriteClicked ? url1 : url2, xmlImagesDownloaded, {
-            headers: {
-              Authorization: Basic,
-            },
-          });
-        });
+      axios.post(dispatch_types_urls["UPLOAD_IMAGE"], {
+        favouriteClicked: favouriteClicked,
+        item: item,
+        reportId: reportId,
+      });
+
       break;
     case "REMOVE_IMAGE":
       var position = actions["position"];
-      axios
-        .get(url1, {
-          headers: {
-            Authorization: Basic,
-          },
-        })
-        .then((response) => {
-          xmlImagesDownloaded = JSON.parse(response.data);
-          xmlImagesDownloaded.splice(position, 1);
-          axios.post(url1, xmlImagesDownloaded, {
-            headers: {
-              Authorization: Basic,
-            },
-          });
-        });
+      axios.post(dispatch_types_urls["REMOVE_IMAGE"], {
+        position: position,
+      });
+
       break;
     default:
       break;

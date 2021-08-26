@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 const useStyles = makeStyles({});
 const GenericXmlDocument = (props) => {
   const { xml } = props;
-  console.log(props);
   return <div> {xml} </div>;
 };
 
