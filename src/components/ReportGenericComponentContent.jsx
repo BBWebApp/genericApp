@@ -22,12 +22,55 @@ const useStyles = makeStyles({
 const ReportTemplateContent = (props) => {
   const { xmlResult } = props;
   const { reportId } = props;
+  const { inverse } = props;
   const classes = useStyles();
 
   var components =
     xmlResult[0].length === undefined ? [xmlResult[0]] : xmlResult[0];
-  return (
-    xmlResult !== undefined && (
+
+  var targetComponent = props.component;
+  var componentOrder =
+    targetComponent !== undefined ? targetComponent.split("_")[0] : undefined;
+  var componentType =
+    targetComponent != undefined ? targetComponent.split("_")[1] : undefined;
+
+  const RerportContentComponentOrFull = (Iscomponents) => {
+    return Iscomponents ? (
+      <div className={classes.report_content}>
+        {components.map((item, index) => {
+          return item.$.type === "table" &&
+            item.$.type === componentType &&
+            index + 1 + "" === componentOrder ? (
+            <ReportGenericComponentTable
+              key={reportId}
+              xmlResult={item}
+              order={index}
+              inverse = {inverse}
+            />
+          ) : item.$.type === "text" &&
+            item.$.type === componentType &&
+            index + 1 + "" === componentOrder ? (
+            <ReportGenericComponentText
+              key={reportId}
+              reportId={reportId}
+              xmlResult={item}
+              order={index}
+            />
+          ) : item.$.type === "chart" &&
+            item.$.type === componentType &&
+            index + 1 + "" === componentOrder ? (
+            <ReportGenericComponentChart
+              key={reportId}
+              reportId={reportId}
+              xmlResult={item}
+              order={index}
+            />
+          ) : (
+            <div></div>
+          );
+        })}
+      </div>
+    ) : (
       <div className={classes.report_content}>
         {components.map((item, index) => {
           return item.$.type === "table" ? (
@@ -51,9 +94,18 @@ const ReportTemplateContent = (props) => {
               order={index}
             />
           ) : (
-            <div>WTFFF</div>
+            <div>noReport</div>
           );
         })}
+      </div>
+    );
+  };
+  return (
+    xmlResult !== undefined && (
+      <div>
+        {RerportContentComponentOrFull(
+          componentOrder === undefined ? false : true
+        )}
       </div>
     )
   );

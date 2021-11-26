@@ -28,10 +28,16 @@ const setImage = (screenShots) => {
   var numberOfScreenshots = screenShots.length;
   for (let index = 0; index < numberOfScreenshots; index++) {
     var screenshotItem = screenShots[index];
-    itemList[index]["imgSrc"] = Object.keys(screenshotItem).map(
-      (key) => screenshotItem[key]
-    );
-    itemList[index]["title"] = Object.keys(screenshotItem).map((key) => key);
+    Object.keys(screenshotItem).map((key) => {
+      if (key !== "date" && key !== "reportUrl")
+        return (
+          (itemList[index]["imgSrc"] = screenshotItem[key]),
+          (itemList[index]["title"] = key)
+        );
+      else if (key === "date") itemList[index]["date"] = screenshotItem[key];
+      else if (key === "reportUrl")
+        itemList[index]["reportUrl"] = screenshotItem[key];
+    });
   }
 };
 
@@ -41,7 +47,6 @@ const RecentlyUsedDashboard = () => {
   var screenShots = useSelector((state) => {
     return state.downloadImage.images;
   }); // state.reducer.stateName
-
   if (screenShots) {
     for (let index = 0; index < 6; index++) {
       itemList[index]["imgSrc"] = "";

@@ -10,7 +10,7 @@ import ReportGenericComponentFooter from "./ReportGenericComponentFooter";
 import ReportGenericComponentHeader from "./ReportGenericComponentHeader";
 import StarBorder from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
-
+import { withRouter } from "react-router-dom";
 const useStyles = makeStyles({});
 
 const ReportGenericComponentPage = (props) => {
@@ -39,8 +39,15 @@ const ReportGenericComponentPage = (props) => {
   };
   const favouriteClicked = () => {
     if (image && slicedImage && reportId === slicedImage["reportId"]) {
+      var date = new Date().toLocaleString();
+
       dispatch(
-        uploadImage(slicedImage["slicedImage"], slicedImage["reportId"], true)
+        uploadImage(
+          slicedImage["slicedImage"],
+          slicedImage["reportId"],
+          date,
+          true
+        )
       );
       setTimeout(() => {
         dispatch(getDownloadedImages(true));
@@ -62,7 +69,11 @@ const ReportGenericComponentPage = (props) => {
     return state.cropImage;
   }); // state.reducer.stateName
   if (image && slicedImage && reportId === slicedImage["reportId"]) {
-    dispatch(uploadImage(slicedImage["slicedImage"], slicedImage["reportId"]));
+    var date = new Date().toLocaleString();
+    var reportUrl = props.location.pathname;
+    dispatch(
+      uploadImage(slicedImage["slicedImage"], slicedImage["reportId"], date,reportUrl)
+    );
   }
 
   useEffect(async () => {
@@ -100,11 +111,11 @@ const ReportGenericComponentPage = (props) => {
             reportId={reportId}
             xmlResult={xmlResult}
           />
-          <ReportGenericComponentFooter key={reportId} />
+          {/* <ReportGenericComponentFooter key={reportId} /> */}
         </div>
       </Grid>
     </div>
   );
 };
 
-export default ReportGenericComponentPage;
+export default withRouter(ReportGenericComponentPage);

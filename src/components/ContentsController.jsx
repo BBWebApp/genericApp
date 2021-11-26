@@ -5,6 +5,10 @@ import React, { useEffect, useState } from "react";
 import ReportGenericComponentPage from "./ReportGenericComponentPage";
 import { useSelector, useDispatch } from "react-redux";
 import { getReportHtml } from "../redux/ducks/serverCall";
+import { Route, Switch } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import ReportGenericComponentContent from "./ReportGenericComponentContent";
+import ReportComponentsObject from "./ReportComponentsObject";
 
 const getReportComponents = (content, packageIds, reportId) => {
   for (let index = 0; index < packageIds.length; index++) {
@@ -14,14 +18,28 @@ const getReportComponents = (content, packageIds, reportId) => {
   return content[reportId];
 };
 
-const BodyFromDrawerController = (props) => {
+const ContentsController = (props) => {
   const { reportId } = props;
   const { packageId } = props;
   const { content } = props;
   const [xmlResult, setxmlResult] = useState(undefined);
 
   var reportComponents = getReportComponents(content, packageId, reportId);
-
+  var { history } = props;
+  var urlPath = history.location.pathname;
+  if (urlPath.includes("components") && urlPath.includes("inverse")) {
+    urlPath = urlPath.split("/");
+    urlPath = urlPath.slice(1, urlPath.length - 3);
+    urlPath = urlPath.join("/");
+  } else if (urlPath.includes("components")) {
+    urlPath = urlPath.split("/");
+    urlPath = urlPath.slice(1, urlPath.length - 2);
+    urlPath = urlPath.join("/");
+  } else if (urlPath.includes("properties")) {
+    urlPath = urlPath.split("/");
+    urlPath = urlPath.slice(1, urlPath.length - 1);
+    urlPath = urlPath.join("/");
+  }
   const dispatch = useDispatch();
   useEffect(() => {
     reportComponents !== undefined && setxmlResult(reportComponents);
@@ -31,6 +49,11 @@ const BodyFromDrawerController = (props) => {
   var reportId_html_flag = useSelector((state) => {
     return state.serverCall.reportId_html_flag;
   }); // state.reducer.stateName
+
+  var html = useSelector((state) => {
+    var temp = state.serverCall.html;
+    return temp;
+  });
   var reportContent;
   if (
     reportComponents !== undefined &&
@@ -51,7 +74,47 @@ const BodyFromDrawerController = (props) => {
   else {
     reportContent = <div>404 Report not found</div>;
   }
-  return reportContent;
+  return (
+    xmlResult !== undefined &&
+    html !== undefined && (
+      <React.Fragment>
+        <Switch>
+          <Route
+            path={`/${urlPath}/components/:param2/inverse`}
+            render={(props) => (
+              <ReportGenericComponentContent
+                reportId={reportId}
+                xmlResult={xmlResult}
+                component={props.match.params.param2}
+                inverse={true}
+              />
+            )}
+          />
+          <Route
+            path={`/${urlPath}/components/:param2`}
+            render={(props) => (
+              <ReportGenericComponentContent
+                reportId={reportId}
+                xmlResult={xmlResult}
+                component={props.match.params.param2}
+                inverse={false}
+              />
+            )}
+          />
+          <Route
+            path={`/${urlPath}/properties`}
+            render={(props) => (
+              <ReportComponentsObject
+                reportId={reportId}
+                xmlResult={xmlResult}
+              />
+            )}
+          />
+          <Route render={(props) => reportContent} />
+        </Switch>
+      </React.Fragment>
+    )
+  );
 };
 
-export default BodyFromDrawerController;
+export default withRouter(ContentsController);

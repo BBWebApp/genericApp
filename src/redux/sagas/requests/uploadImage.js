@@ -10,10 +10,14 @@ export function requestUpload(actions) {
     case "UPLOAD_IMAGE":
       var reportId = actions["reportId"];
       var item = actions["image"];
+      var date = actions["date"];
+      var reportUrl = actions["reportUrl"];
       var favouriteClicked = actions["favourite"];
       axios.post(dispatch_types_urls["UPLOAD_IMAGE"], {
         favouriteClicked: favouriteClicked,
         item: item,
+        date: date,
+        reportUrl: reportUrl,
         reportId: reportId,
       });
 

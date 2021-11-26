@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: red[500],
   },
   headerRoot: {
-    maxHeight: "12px",
+    maxHeight: "20px",
   },
   headerTitle: {
     color: "rgb(120.0, 120.0, 120.0)",
@@ -57,7 +57,7 @@ function SimpleCard(props) {
   const { history } = props;
   const { deleteBtn } = props;
   const { position } = props;
-  const { avatarSrc, title, subtitle, description, imgSrc } = props;
+  const { title, description, imgSrc, date, reportUrl } = props;
   const dispatch = useDispatch();
 
   return (
@@ -70,6 +70,7 @@ function SimpleCard(props) {
               title: classes.headerTitle,
             }}
             title={title}
+            subheader={date}
             titleTypographyProps={{ variant: "h6" }}
             action={
               deleteBtn && (
@@ -88,11 +89,7 @@ function SimpleCard(props) {
             }
           />
           <Paper variant="elevation" elevation="2">
-            <Link
-              underline="none"
-              component={RouterLink}
-              to={"/Reports/" + title}
-            >
+            <Link underline="none" component={RouterLink} to={reportUrl}>
               <CardMedia
                 className={classes.media}
                 component="img"

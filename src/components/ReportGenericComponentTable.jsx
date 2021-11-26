@@ -1,4 +1,5 @@
 import {
+  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -11,19 +12,36 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTableData } from "../redux/ducks/tableData";
 
-var base = require("base-64");
-
-var tok = "gui_client:kFjfAh68k$$ADUjPr?vPA";
-var hash = base.encode(tok);
-var Basic = "Basic " + hash;
-
+const useStyles = makeStyles({
+  tableContainer: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+  },
+  table: {
+    display: "flex",
+    whiteSpace: "nowrap",
+  },
+  tableHead: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  tableBody: {
+    display: "flex",
+  },
+  tableRow: {
+    display: "flex",
+    flexDirection: "column",
+  },
+});
 const ReportTable = (props) => {
   const { xmlResult } = props;
+  const { inverse } = props;
   const [columns, setColumns] = useState(undefined);
   const [rowsPerPage, setrowsPerPage] = useState(10);
   const [page, setpage] = useState(0);
+  const classes = useStyles();
   const dispatch = useDispatch();
-
   var colNames = [];
   var reportTableData = [];
   var tableDataState = useSelector((state) => {
@@ -66,7 +84,7 @@ const ReportTable = (props) => {
 
   useEffect(async () => {
     dispatch(getTableData(xmlResult.data.$.link));
-    setColumns(xmlResult.columns.columnName);
+    setColumns(xmlResult.columns.column);
   }, []);
 
   columns !== undefined && setColumnNames(columns);
@@ -74,44 +92,80 @@ const ReportTable = (props) => {
     reportTableData.length === 0 &&
     setReportTableData(JSON.parse(tableDataState.response.payload));
 
-  return (
-    columns !== undefined &&
+  return columns !== undefined &&
     tableDataState !== undefined &&
-    reportTableData.length !== 0 && (
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {Object.keys(reportTableData[0]).map((colName) => (
-                <TableCell align="left">{colName}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {reportTableData
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((oneRow) => {
-                return (
-                  <TableRow key={oneRow.user_avg}>
-                    {Object.keys(oneRow).map((key) => {
-                      return <TableCell align="left">{oneRow[key]}</TableCell>;
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={reportTableData.length}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={changeRowsPerPage}
-        />
-      </TableContainer>
-    )
+    reportTableData.length !== 0 &&
+    inverse === true ? (
+    <TableContainer className={classes.tableContainer}>
+      <Table className={classes.table}>
+        <TableRow className={classes.tableHead}>
+          {Object.keys(reportTableData[0]).map((colName) => (
+            <TableCell align="right">{colName}</TableCell>
+          ))}
+        </TableRow>
+        <TableBody className={classes.tableBody}>
+          {reportTableData
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((oneRow) => {
+              return (
+                <TableRow className={classes.tableRow} key={oneRow.user_avg}>
+                  {Object.keys(oneRow).map((key) => {
+                    return <TableCell align="right">{oneRow[key]}</TableCell>;
+                  })}
+                </TableRow>
+              );
+            })}
+        </TableBody>
+      </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={reportTableData.length}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={changeRowsPerPage}
+      />
+    </TableContainer>
+  ) : columns !== undefined &&
+    tableDataState !== undefined &&
+    reportTableData.length !== 0 ? (
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {Object.keys(reportTableData[0]).map((colName) => (
+              <TableCell align="left">{colName}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {reportTableData
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((oneRow) => {
+              return (
+                <TableRow key={oneRow.user_avg}>
+                  {Object.keys(oneRow).map((key) => {
+                    return <TableCell align="left">{oneRow[key]}</TableCell>;
+                  })}
+                </TableRow>
+              );
+            })}
+        </TableBody>
+      </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={reportTableData.length}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={changeRowsPerPage}
+      />
+    </TableContainer>
+  ) : (
+    <div></div>
   );
 };
 
