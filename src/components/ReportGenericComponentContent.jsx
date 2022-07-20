@@ -3,6 +3,7 @@ import { Typography, makeStyles } from "@material-ui/core";
 import ReportGenericComponentTable from "./ReportGenericComponentTable";
 import ReportGenericComponentText from "./ReportGenericComponentText";
 import ReportGenericComponentChart from "./ReportGenericComponentChart";
+import ReportGenericComponentImage from "./ReportGenericComponentImage";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
@@ -45,7 +46,7 @@ const ReportTemplateContent = (props) => {
               key={reportId}
               xmlResult={item}
               order={index}
-              inverse = {inverse}
+              inverse={inverse}
             />
           ) : item.$.type === "text" &&
             item.$.type === componentType &&
@@ -60,6 +61,15 @@ const ReportTemplateContent = (props) => {
             item.$.type === componentType &&
             index + 1 + "" === componentOrder ? (
             <ReportGenericComponentChart
+              key={reportId}
+              reportId={reportId}
+              xmlResult={item}
+              order={index}
+            />
+          ) : item.$.type === "image" &&
+            item.$.type === componentType &&
+            index + 1 + "" === componentOrder ? (
+            <ReportGenericComponentImage
               key={reportId}
               reportId={reportId}
               xmlResult={item}
@@ -88,6 +98,13 @@ const ReportTemplateContent = (props) => {
             />
           ) : item.$.type === "chart" ? (
             <ReportGenericComponentChart
+              key={reportId}
+              reportId={reportId}
+              xmlResult={item}
+              order={index}
+            />
+          ) : item.$.type === "image" ? (
+            <ReportGenericComponentImage
               key={reportId}
               reportId={reportId}
               xmlResult={item}

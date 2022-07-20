@@ -9,6 +9,8 @@ import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import ReportGenericComponentContent from "./ReportGenericComponentContent";
 import ReportComponentsObject from "./ReportComponentsObject";
+import Box from "@material-ui/core/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const getReportComponents = (content, packageIds, reportId) => {
   for (let index = 0; index < packageIds.length; index++) {
@@ -55,6 +57,7 @@ const ContentsController = (props) => {
     return temp;
   });
   var reportContent;
+ 
   if (
     reportComponents !== undefined &&
     xmlResult !== undefined &&
@@ -72,7 +75,14 @@ const ContentsController = (props) => {
   //   reportContent = <Report key={reportId} reportId={reportId} />;
   // }
   else {
-    reportContent = <div>404 Report not found</div>;
+    reportContent = (
+      <div>
+        <Box sx={{ display: "flex" }}>
+        {/* Loading... */}
+          <CircularProgress />
+        </Box>
+      </div>
+    );
   }
   return (
     xmlResult !== undefined &&

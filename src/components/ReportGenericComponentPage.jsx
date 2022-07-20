@@ -14,6 +14,11 @@ import { withRouter } from "react-router-dom";
 const useStyles = makeStyles({});
 
 const ReportGenericComponentPage = (props) => {
+  var screenShots = useSelector((state) => state.downloadImage.favs); // state.reducer.stateName
+  var slicedImage = useSelector((state) => {
+    return state.cropImage;
+  }); // state.reducer.stateName
+
   const { xmlResult } = props;
   const { reportId } = props;
   const { packageId } = props;
@@ -28,7 +33,6 @@ const ReportGenericComponentPage = (props) => {
   const ref = createRef(null);
   const [image, takeScreenShot] = useScreenshot();
 
-  var screenShots = useSelector((state) => state.downloadImage.favs); // state.reducer.stateName
   var favReportsNames = [];
 
   const getImage = () => {
@@ -39,14 +43,24 @@ const ReportGenericComponentPage = (props) => {
   };
   const favouriteClicked = () => {
     if (image && slicedImage && reportId === slicedImage["reportId"]) {
-      var date = new Date().toLocaleString();
+      var date = new Date().toLocaleString().replace("/", ".");
+      var newDate = [];
+      date = date.split(".");
+      date.forEach((element) => {
+        if (element.toString().length === 1) element = "0" + element;
 
+        newDate.push(element);
+      });
+      newDate = newDate.join(".").replace("/", ".");
+      var reportUrl = props.location.pathname;
       dispatch(
         uploadImage(
           slicedImage["slicedImage"],
           slicedImage["reportId"],
-          date,
-          true
+          newDate,
+          reportUrl,
+          true,
+          reportElement
         )
       );
       setTimeout(() => {
@@ -65,14 +79,26 @@ const ReportGenericComponentPage = (props) => {
     // }, 1000);
   }, [image]);
 
-  var slicedImage = useSelector((state) => {
-    return state.cropImage;
-  }); // state.reducer.stateName
   if (image && slicedImage && reportId === slicedImage["reportId"]) {
-    var date = new Date().toLocaleString();
+    var date = new Date().toLocaleString().replace("/", ".");
+    var newDate = [];
+    date = date.split(".");
+    date.forEach((element) => {
+      if (element.toString().length === 1) element = "0" + element;
+
+      newDate.push(element);
+    });
+    newDate = newDate.join(".").replace("/", ".");
     var reportUrl = props.location.pathname;
     dispatch(
-      uploadImage(slicedImage["slicedImage"], slicedImage["reportId"], date,reportUrl)
+      uploadImage(
+        slicedImage["slicedImage"],
+        slicedImage["reportId"],
+        newDate,
+        reportUrl,
+        false,
+        reportElement
+      )
     );
   }
 
@@ -105,7 +131,7 @@ const ReportGenericComponentPage = (props) => {
             <StarBorder />
           )}
         </IconButton>
-        <div ref={ref}>
+        <div ref={ref} >
           <ReportGenericComponentHeader key={reportId} />
           <ReportGenericComponentContent
             reportId={reportId}

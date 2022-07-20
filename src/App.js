@@ -3,6 +3,12 @@ import { BrowserRouter } from "react-router-dom";
 import GenericManager from "./components/GenericManager";
 import { useSelector, useDispatch } from "react-redux";
 import { getXML, getGenericApp } from "./redux/ducks/serverCall";
+import Box from "@material-ui/core/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  getDownloadedImages,
+  GET_DOWNLOADIMAGES,
+} from "./redux/ducks/downloadImage";
 
 /* 
 lcp --proxyUrl http://192.168.178.36:5002 --port 8011
@@ -13,6 +19,10 @@ function App() {
 
   useEffect(() => {
     dispatch(getXML());
+
+    dispatch(getDownloadedImages(true));
+
+    dispatch(getDownloadedImages());
   }, []);
 
   var Xml = useSelector((state) => {
@@ -30,7 +40,13 @@ function App() {
       {/* )} */}
     </BrowserRouter>
   ) : (
-    <div>404 XML not found</div>
+    <Box
+      style={{ justifyContent: "center", alignItems: "center" }}
+      sx={{ display: "flex" }}
+    >
+      {/* Loading... */}
+      <CircularProgress />
+    </Box>
   );
 }
 

@@ -11,12 +11,22 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTableData } from "../redux/ducks/tableData";
+import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles({
+  recentlyUsed: {
+    fontSize: "20px",
+    color: "rgb(60.0, 60.0, 60.0)",
+    marginBottom: "12px",
+    borderBottom: "1px solid #787878",
+  },
+  tableNormal: {
+    whiteSpace: "nowrap",
+  },
   tableContainer: {
-    display: "flex",
     width: "100%",
     flexDirection: "row",
+
   },
   table: {
     display: "flex",
@@ -38,7 +48,8 @@ const ReportTable = (props) => {
   const { xmlResult } = props;
   const { inverse } = props;
   const [columns, setColumns] = useState(undefined);
-  const [rowsPerPage, setrowsPerPage] = useState(10);
+  const [rowsPerPageInverse, setrowsPerPageInverse] = useState(1);
+  const [rowsPerPage, setrowsPerPage] = useState(5);
   const [page, setpage] = useState(0);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -77,6 +88,10 @@ const ReportTable = (props) => {
     setrowsPerPage(event.target.value);
     setpage(0);
   };
+  const changeRowsPerPageInverse = (event, newRows) => {
+    setrowsPerPageInverse(event.target.value);
+    setpage(0);
+  };
 
   const handleChangePage = (event, newPage) => {
     setpage(newPage);
@@ -96,56 +111,39 @@ const ReportTable = (props) => {
     tableDataState !== undefined &&
     reportTableData.length !== 0 &&
     inverse === true ? (
-    <TableContainer className={classes.tableContainer}>
+    <TableContainer className={classes.tableContainer} >
+      <TablePagination
+        style={{ marginleft: "-250px", color: "#787878" }}
+        rowsPerPageOptions={[1, 5, 10]}
+        component="div"
+        count={reportTableData.length}
+        page={page}
+        rowsPerPage={rowsPerPageInverse}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={changeRowsPerPageInverse}
+        labelRowsPerPage={"Columns per page"}
+      />
+      <Divider
+        style={{ background: "#5a5a5a", marginRight: "17px" }}
+        variant="fullWidth"
+      />
       <Table className={classes.table}>
         <TableRow className={classes.tableHead}>
           {Object.keys(reportTableData[0]).map((colName) => (
-            <TableCell align="right">{colName}</TableCell>
+            <TableCell align="left" style={{ fontWeight: "bolder" }}>
+              {colName}
+            </TableCell>
           ))}
         </TableRow>
         <TableBody className={classes.tableBody}>
           {reportTableData
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .slice(
+              page * rowsPerPageInverse,
+              page * rowsPerPageInverse + rowsPerPageInverse
+            )
             .map((oneRow) => {
               return (
                 <TableRow className={classes.tableRow} key={oneRow.user_avg}>
-                  {Object.keys(oneRow).map((key) => {
-                    return <TableCell align="right">{oneRow[key]}</TableCell>;
-                  })}
-                </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={reportTableData.length}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={changeRowsPerPage}
-      />
-    </TableContainer>
-  ) : columns !== undefined &&
-    tableDataState !== undefined &&
-    reportTableData.length !== 0 ? (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {Object.keys(reportTableData[0]).map((colName) => (
-              <TableCell align="left">{colName}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {reportTableData
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((oneRow) => {
-              return (
-                <TableRow key={oneRow.user_avg}>
                   {Object.keys(oneRow).map((key) => {
                     return <TableCell align="left">{oneRow[key]}</TableCell>;
                   })}
@@ -154,7 +152,13 @@ const ReportTable = (props) => {
             })}
         </TableBody>
       </Table>
+    </TableContainer>
+  ) : columns !== undefined &&
+    tableDataState !== undefined &&
+    reportTableData.length !== 0 ? (
+    <TableContainer >
       <TablePagination
+        style={{ paddingRight: "150px", color: "#787878" }}
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={reportTableData.length}
@@ -163,6 +167,33 @@ const ReportTable = (props) => {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={changeRowsPerPage}
       />
+      <Divider
+        style={{ background: "#5a5a5a", marginRight: "17px" }}
+        variant="fullWidth"
+      />
+      <Table className={classes.tableNormal}>
+        <TableRow >
+          {Object.keys(reportTableData[0]).map((colName) => (
+            <TableCell align="left" style={{ fontWeight: "bolder" }}>
+              {colName}
+            </TableCell>
+          ))}
+        </TableRow>
+
+        <TableBody>
+          {reportTableData
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((oneRow) => {
+              return (
+                <TableRow  key={oneRow.user_avg}>
+                  {Object.keys(oneRow).map((key) => {
+                    return <TableCell  align="left">{oneRow[key]}</TableCell>;
+                  })}
+                </TableRow>
+              );
+            })}
+        </TableBody>
+      </Table>
     </TableContainer>
   ) : (
     <div></div>

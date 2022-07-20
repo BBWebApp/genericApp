@@ -17,11 +17,6 @@ const Welcome = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  useEffect(() => {
-    dispatch(getDownloadedImages(true));
-
-    dispatch(getDownloadedImages());
-  }, []);
   return (
     <div className={classes.content}>
       <RecentlyUsedGenericDashboard />

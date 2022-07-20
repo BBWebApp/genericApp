@@ -13,19 +13,19 @@ const ReportChart = (props) => {
   const { xmlResult } = props;
   const { reportId } = props;
   const { order } = props;
-  const [text, setText] = useState();
-  const [resizedText, setResizedText] = useState();
+  const [image, setImage] = useState();
+  const [resizedImage, setResizedImage] = useState(undefined);
   const [Xml, setXml] = useState(undefined);
 
   var html = useSelector((state) => {
     var temp = state.serverCall.html;
-    var chart = temp[order]["Chart"];
-    return chart;
+    var image = temp[order]["Image"];
+    return image;
   }); // state.reducer.stateName
 
-  const imageToDataUri = (width, height) => {
+  const resizeImage = (width, height) => {
     var img_temp = new Image();
-    img_temp.src = text;
+    img_temp.src = image;
     var canvas = document.createElement("canvas"),
       ctx = canvas.getContext("2d"),
       width = width;
@@ -52,7 +52,7 @@ const ReportChart = (props) => {
               if (child.props.id.includes("resizableImage")) {
                 child.props.children.map((item) => {
                   if (item.type === "embed") {
-                    setText(item.props.src);
+                    setImage(item.props.src);
                   }
                 });
               }
@@ -64,21 +64,18 @@ const ReportChart = (props) => {
   }, [Xml]);
   const classes = useStyles();
   useEffect(() => {
-    text && setResizedText(imageToDataUri(480, 400));
-  }, [text]);
+    image && setResizedImage(resizeImage(390, 300));
+  }, [image]);
 
   return (
-    text !== undefined && (
+    image !== undefined &&
+    resizedImage !== undefined && (
       <div>
-        <img
-          src={resizedText}
-          style={{ marginLeft: "-52px", marginTop: "-60px" }}
-        />
-        <img src={text} style={{ display: "none" }} />
+        <img src={image} width={"90%"} height={"60%"} />
+        {/* <img src={image} style={{ display: "none" }}  /> */}
       </div>
     )
   );
-  // return text !== undefined && <div> {ReactHtmlParser(text)} </div>;
 };
 
 export default ReportChart;

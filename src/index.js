@@ -6,6 +6,9 @@ import Store from "./redux/configureStore";
 import { Provider } from "react-redux";
 import App from "./App";
 import './global.js'
+
+console.warn = console.error = () => {};
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={Store}>

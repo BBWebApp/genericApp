@@ -26,6 +26,7 @@ export default (state = initialState, action) => {
     case SET_SLICEDIMAGE:
       var { slicedImage } = action;
       var { reportId } = action;
+     
       return { ...state, slicedImage: slicedImage, reportId: reportId };
     default:
       return state;

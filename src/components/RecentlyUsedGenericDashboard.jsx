@@ -28,15 +28,17 @@ const setImage = (screenShots) => {
   var numberOfScreenshots = screenShots.length;
   for (let index = 0; index < numberOfScreenshots; index++) {
     var screenshotItem = screenShots[index];
+
     Object.keys(screenshotItem).map((key) => {
-      if (key !== "date" && key !== "reportUrl")
+      if (key !== "date" && key !== "reportUrl" && key !== "reportElement")
         return (
           (itemList[index]["imgSrc"] = screenshotItem[key]),
           (itemList[index]["title"] = key)
         );
       else if (key === "date") itemList[index]["date"] = screenshotItem[key];
-      else if (key === "reportUrl")
+      else if (key === "reportUrl") {
         itemList[index]["reportUrl"] = screenshotItem[key];
+      }
     });
   }
 };
@@ -57,7 +59,7 @@ const RecentlyUsedDashboard = () => {
     <div>
       <Typography className={classes.recentlyUsed}>Recently used</Typography>
       <Grid
-        style={{ marginLeft: "30px", marginTop: "30px" }}
+        style={{ marginLeft: "10px", marginTop: "30px" }}
         container
         spacing={1}
       >

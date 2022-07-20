@@ -41,7 +41,7 @@ const ReportText = (props) => {
     }
   }, [Xml]);
 
-  return text !== undefined && <div> {ReactHtmlParser(text)} </div>;
+  return text !== undefined && <div style={{marginRight:"10px"}}> {ReactHtmlParser(text)} </div>;
 };
 
 export default ReportText;

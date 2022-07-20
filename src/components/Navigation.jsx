@@ -199,7 +199,7 @@ const Drawer = (props) => {
       </List>
     </WMDrawer>
   ) : (
-    <div>asd</div>
+    <div>null</div>
   );
 };
 

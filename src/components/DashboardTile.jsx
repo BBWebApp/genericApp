@@ -45,11 +45,20 @@ const useStyles = makeStyles((theme) => ({
   },
   headerTitle: {
     color: "rgb(120.0, 120.0, 120.0)",
+    marginLeft: "-10px",
   },
   deleteBtn: {
     "&:hover": {
       color: "#ed9a0d",
     },
+  },
+  overflowWithDots: {
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    width: "115px",
+    marginLeft: "-10px",
+    color: "rgb(120.0, 120.0, 120.0)",
   },
 }));
 function SimpleCard(props) {
@@ -64,30 +73,35 @@ function SimpleCard(props) {
     <Paper elevation="4">
       {imgSrc && (
         <Card className={classes.root}>
-          <CardHeader
-            classes={{
-              root: classes.headerRoot,
-              title: classes.headerTitle,
-            }}
-            title={title}
-            subheader={date}
-            titleTypographyProps={{ variant: "h6" }}
-            action={
-              deleteBtn && (
-                <IconButton
-                  style={{ backgroundColor: "white", maxHeight: "12px" }}
-                  onClick={() => {
-                    dispatch(removeCard(position));
-                    setTimeout(() => {
-                      dispatch(getDownloadedImages(true));
-                    }, 200);
-                  }}
-                >
-                  <DeleteIcon className={classes.deleteBtn} />
-                </IconButton>
-              )
-            }
-          />
+            <CardHeader
+              classes={{
+                root: classes.headerRoot,
+                title: classes.headerTitle,
+              }}
+              title={
+                <Typography className={classes.overflowWithDots}>
+                  {title}
+                </Typography>
+              }
+              // subheader={date}
+              titleTypographyProps={{ variant: "subtitle1" }}
+              subheaderTypographyProps={{ variant: "body2" }}
+              action={
+                deleteBtn && (
+                  <IconButton
+                    style={{ backgroundColor: "white", maxHeight: "12px" }}
+                    onClick={() => {
+                      dispatch(removeCard(position));
+                      setTimeout(() => {
+                        dispatch(getDownloadedImages(true));
+                      }, 200);
+                    }}
+                  >
+                    <DeleteIcon className={classes.deleteBtn} />
+                  </IconButton>
+                )
+              }
+            />
           <Paper variant="elevation" elevation="2">
             <Link underline="none" component={RouterLink} to={reportUrl}>
               <CardMedia
@@ -102,9 +116,7 @@ function SimpleCard(props) {
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
-                >
-                  <Typography>Description</Typography>
-                </AccordionSummary>
+                ></AccordionSummary>
                 <CardContent>
                   <Typography>{description}</Typography>
                 </CardContent>
